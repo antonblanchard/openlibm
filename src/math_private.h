@@ -167,21 +167,25 @@ typedef union
 
 /* Get a 32 bit int from a float.  */
 
+#ifndef GET_FLOAT_WORD
 #define GET_FLOAT_WORD(i,d)					\
 do {								\
   ieee_float_shape_type gf_u;					\
   gf_u.value = (d);						\
   (i) = gf_u.word;						\
 } while (0)
+#endif
 
 /* Set a float from a 32 bit int.  */
 
+#ifndef SET_FLOAT_WORD
 #define SET_FLOAT_WORD(d,i)					\
 do {								\
   ieee_float_shape_type sf_u;					\
   sf_u.word = (i);						\
   (d) = sf_u.value;						\
 } while (0)
+#endif
 
 /* Get expsign as a 16 bit int from a long double.  */
 

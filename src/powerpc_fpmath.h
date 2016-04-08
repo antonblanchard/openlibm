@@ -47,3 +47,31 @@ union IEEEl2bits {
 	(a)[0] = (uint32_t)(u).bits.manl;		\
 	(a)[1] = (uint32_t)(u).bits.manh;		\
 } while(0)
+
+#ifdef __POWER8_VECTOR__
+/* Get a 32 bit int from a float.  */
+
+#define GET_FLOAT_WORD(i,d)					\
+	do {							\
+		double tmp;					\
+		__asm__ (					\
+			"xscvdpspn %1, %2\n\t"			\
+			"xxspltw %1, %1, 0\n\t"			\
+			"mfvsrwz %0, %1\n\t"			\
+			: "=r" ((uint32_t) i),			\
+			  "=d" (tmp)				\
+			: "d" ((float) d) );			\
+	} while(0)
+
+/* Set a float from a 32 bit int.  */
+
+#define SET_FLOAT_WORD(d,i)					\
+	do {							\
+		__asm__ (					\
+			"mtvsrwz %0, %1\n\t"			\
+			"xxspltw %0, %0, 1\n\t"			\
+			"xscvspdp %0, %0\n\t"			\
+			: "=d" ((float) d)			\
+			: "r" ((uint32_t) i) );			\
+	} while(0)
+#endif
